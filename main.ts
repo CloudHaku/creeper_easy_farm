@@ -31,7 +31,7 @@ function 限制高度 (離中心: number, 高度: number, 方塊: string) {
 function 限制蜘蛛 (離中心: number, 高度: number, 方塊: string) {
     i = 離中心 * -1
     while (i <= 離中心) {
-        if (i % 2 == 1) {
+        if (Math.abs(i) % 2 == 1) {
             j = 離中心 * -1
             while (j <= 離中心) {
                 if (j % 2 == 0) {
@@ -69,23 +69,22 @@ player.onChat("bu", function () {
     起始點,
     pos(0, LVL, 0)
     )
-    水漏斗(20)
-    四個邊(9, 21, blocks.nameOfBlock(PINK_CONCRETE))
-    四個邊(10, 21, blocks.nameOfBlock(LIME_CONCRETE))
-    四個邊(10, 22, blocks.nameOfBlock(PURPUR_SLAB))
-    四個邊(9, 22, blocks.nameOfBlock(WATER))
-    LVL = 24
-    起始點 = positions.add(
-    起始點,
-    pos(0, LVL, 0)
-    )
+    LVL = LVL + 水漏斗(20)
+    LVL += 1
+    四個邊(9, LVL, blocks.nameOfBlock(PINK_CONCRETE))
+    四個邊(10, LVL, blocks.nameOfBlock(LIME_CONCRETE))
+    LVL += 1
+    四個邊(10, LVL, blocks.nameOfBlock(PURPUR_SLAB))
+    四個邊(9, LVL, blocks.nameOfBlock(WATER))
+    LVL += 1
+    LVL = 23
     for (let index = 0; index < 4; index++) {
         網狀(7, 0 + LVL, blocks.nameOfBlock(PURPUR_BLOCK))
         限制蜘蛛(7, 1 + LVL, blocks.nameOfBlock(PURPUR_SLAB))
         限制高度(7, 2 + LVL, blocks.nameOfBlock(IRON_TRAPDOOR))
         LVL += 3
     }
-    LVL += -3
+    LVL += -2
     blocks.fill(
     BAMBOO_MOSAIC_SLAB,
     positions.add(
@@ -129,6 +128,25 @@ function 網狀 (離中心: number, 高度: number, 方塊: string) {
         net += 2
     }
     player.say("地面完成")
+    i = 離中心 * -1
+    while (i <= 離中心) {
+        if (i % 2 == 0) {
+            j = 離中心 * -1
+            while (j <= 離中心) {
+                if (j % 2 == 0) {
+                    blocks.place(blocks.blockWithData(IRON_TRAPDOOR, 12), positions.add(
+                    起始點,
+                    pos(i, 高度, j)
+                    ))
+                    loops.pause(30)
+                }
+                j += 1
+            }
+        }
+        loops.pause(30)
+        i += 1
+    }
+    player.say("陷阱門完成")
 }
 function 水漏斗 (共幾層: number) {
     blocks.fill(
@@ -163,19 +181,20 @@ function 水漏斗 (共幾層: number) {
     ),
     positions.add(
     起始點,
-    pos(0, 20, 0)
+    pos(0, 共幾層, 0)
     ),
     FillOperation.Replace
     )
+    return 共幾層
 }
 let j = 0
 let i = 0
 let net = 0
 let xylist: number[][] = []
-let 起始點: Position = null
 let LVL = 0
-LVL = 4
+let 起始點: Position = null
 起始點 = world(3, 0, -3)
+LVL = 4
 xylist = [
 [1, 1],
 [1, -1],
